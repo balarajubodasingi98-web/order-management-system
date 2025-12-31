@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Products</title>
+</head>
+<body>
+
+<h2>Available Products</h2>
+<div id="products"></div>
+
+<script>
+const token = localStorage.getItem("token");
+const role  = localStorage.getItem("role"); // USER / ADMIN
+
+if (!token || token.split(".").length !== 3) {
+  alert("Please login first");
+  window.location.href = "login.html";
+} else {
+
+  let apiUrl = "/api/products";
+
+  // Admin sees all products
+  if (role === "ADMIN") {
+    apiUrl = "/api/products/admin";
+  }
+
+  fetch(apiUrl, {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Failed to load products");
+    }
+    return res.json();
+  })
+  .then(products => {
+    let html = "";
+
+    products.forEach(p => {
+      html += `
+        <div>
+          <b>${p.name}</b> - ₹${p.price}
+          ${role === "USER" ? `<button onclick="order(${p.id})">Order</button>` : ""}
+        </div><br>
+      `;
+    });
+
+    document.getElementById("products").innerHTML = html;
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error loading products");
+  });
+}
+
+function order(productId) {
+  fetch("/api/orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({
+      items: [
+        { productId: productId, quantity: 1 }
+      ]
+    })
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Order failed");
+    }
+    return res.json();
+  })
+  .then(() => {
+    alert("Order placed successfully");
+    window.location.href = "orders.html";
+  })
+  .catch(err => {
+    alert("Could not place order");
+  });
+}
+</script>
+
+</body>
+</html>

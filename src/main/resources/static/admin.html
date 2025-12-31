@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Orders</title>
+</head>
+<body>
+
+<h2>Admin Dashboard</h2>
+<button onclick="loadOrders()">View All Orders</button>
+
+
+<script>
+function loadOrders() {
+	  fetch("/api/admin/orders", {
+	    headers: {
+	      "Authorization": "Bearer " + localStorage.getItem("token")
+	    }
+	  })
+	  .then(res => res.json())
+	  .then(data => console.log(data));
+	}
+
+</script>
+
+</body>
+</html>

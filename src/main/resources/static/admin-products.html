@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Product Management</title>
+</head>
+<body>
+
+<h2>Admin Product Management</h2>
+
+<button onclick="logout()">Logout</button>
+<button onclick="goToOrders()">View Orders</button>
+
+
+<hr>
+
+<h3>Add Product</h3>
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<input id="stock" placeholder="Stock">
+<button onclick="addProduct()">Add</button>
+
+<hr>
+
+<h3>All Products</h3>
+<div id="allProducts"></div>
+
+<script src="/admin-product.js"></script>
+</body>
+</html>

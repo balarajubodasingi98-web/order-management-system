@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Orders</title>
+</head>
+<body>
+
+<h2>My Orders</h2>
+<div id="orders"></div>
+
+<script>
+const token = localStorage.getItem("token");
+
+if (!token) {
+  alert("Please login first");
+  window.location.href = "login.html";
+}
+
+fetch("/api/orders/my", {
+  headers: {
+    "Authorization": "Bearer " + token
+  }
+})
+.then(res => {
+  if (res.status === 403) {
+    alert("Access denied");
+    return [];
+  }
+  return res.json();
+})
+.then(orders => {
+  let html = "";
+  orders.forEach(o => {
+    html += `
+      <div>
+        <b>Order ID:</b> ${o.id} <br>
+        <b>Status:</b> ${o.status} <br>
+        <b>Total:</b> ₹${o.totalAmount}
+        <hr>
+      </div>
+    `;
+  });
+  document.getElementById("orders").innerHTML = html;
+});
+</script>
+
+</body>
+</html>
